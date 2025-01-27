@@ -24,6 +24,8 @@
 #23.Correlation analysis.
 #24.Plot data.
 #25.Export to Excel.
+#26.Append DataFrames
+#27.Transpose DataFrames
 
 
 # Import necessary libraries
@@ -167,3 +169,37 @@ plt.show()
 # 25. Export to Excel
 df.to_excel("expanded_employee_data.xlsx", index=False)
 print("\n25. Data exported to 'expanded_employee_data.xlsx'.")
+
+
+# 26. Append a New Table to the Existing DataFrame
+# Create a new table (DataFrame) to append
+new_employees = pd.DataFrame({
+    "Employee": ["Frank", "Grace"],
+    "Department": ["Finance", "IT"],
+    "Age": [33, 28],
+    "Annual_Salary": [58000, 72000],
+    "Years_at_Company": [2, 1]
+})
+
+# Append the new table to the original DataFrame
+df = pd.concat([df, new_employees], ignore_index=True)
+print("\n26. DataFrame After Appending New Employees:")
+print(df)
+
+# Verify the updated DataFrame structure
+print("\nUpdated Shape of the DataFrame:", df.shape)
+
+
+# 27. Transpose the DataFrame
+transposed_df = df.T  # Transpose the DataFrame
+print("\n27. Transposed DataFrame:")
+print(transposed_df)
+
+
+
+
+
+
+
+
+
