@@ -1,0 +1,43 @@
+# This script demonstrates how to fill missing cement production data (1990-1993) using a surrogate dataset (construction sector index). The process involves:
+
+#1. Loading Datasets: Two datasets are used—cement production data (1990-2023) and construction sector index (1982-2023).
+#2. Calculating the Ratio: The ratio of cement production to the construction index is computed for available data (1994-1998).
+#3. Filling Missing Data: The average ratio is applied to the missing cement production values (1990-1993) by multiplying with the corresponding construction index values.
+#4. Displaying Results: The final dataset with the filled values is output.
+
+
+
+import pandas as pd
+
+# Cement production dataset (1990-2023)
+cement_data = pd.DataFrame({
+    'year': [1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2023],
+    'cement_production': [None, None, None, None, 100, 105, 110, 115, 120, 125, 130, 150] 
+})
+# 1990-1993 data is missing
+
+# Construction sector index dataset (1982-2023)
+construction_index = pd.DataFrame({
+    'year': [1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2023],
+    'construction_index': [50, 52, 55, 58, 60, 63, 65, 67, 70, 72, 75, 78, 80, 82, 85, 88, 90, 92, 95, 100]
+})
+# Construction sector index represents the economic growth in construction sector and it is assumed to be correlated with cement production
+
+# Calculate the ratio of cement production to construction index (1994-1998)
+merged_data = pd.merge(cement_data, construction_index, on='year', how='left')
+
+# Calculate the ratio of cement production to construction index for years 1994-1998
+ratios = merged_data[(merged_data['year'] >= 1994) & (merged_data['year'] <= 1998)]
+ratios['production_to_index_ratio'] = ratios['cement_production'] / ratios['construction_index']
+
+# Calculate the average ratio
+average_ratio = ratios['production_to_index_ratio'].mean()
+
+# Fill missing cement production data for 1990-1993
+for year in range(1990, 1994):
+    construction_index_value = construction_index[construction_index['year'] == year]['construction_index'].values[0]
+    estimated_production = construction_index_value * average_ratio
+    cement_data.loc[cement_data['year'] == year, 'cement_production'] = estimated_production
+
+# Step 4: Display the results
+print(cement_data)
